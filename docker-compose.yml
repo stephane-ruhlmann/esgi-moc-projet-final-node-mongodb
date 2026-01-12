@@ -1,0 +1,14 @@
+services:
+  mongodb:
+    image: mongo:8
+    container_name: iot-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=iot_monitoring
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
