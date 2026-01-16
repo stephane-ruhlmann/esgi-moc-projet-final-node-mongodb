@@ -56,7 +56,7 @@ const generateUUID = (): string => {
 
 // Génération de données de télémétrie
 const generateTelemetry = (
-  type: "climate" | "presence"
+  type: "climate" | "presence",
 ): Record<string, unknown> => {
   const base = {
     timestamp: new Date().toISOString(),
@@ -85,7 +85,7 @@ const sleep = (ms: number): Promise<void> =>
 const registerDevice = async (
   deviceId: string,
   name: string,
-  type: "climate" | "presence"
+  type: "climate" | "presence",
 ): Promise<{ deviceAccessKey: string; status: string }> => {
   console.log(`📝 Enregistrement du device...`);
   console.log(`   ID: ${deviceId}`);
@@ -99,13 +99,18 @@ const registerDevice = async (
   });
 
   if (!response.ok) {
-    const errorData = (await response.json().catch(() => ({}))) as { message?: string };
+    const errorData = (await response.json().catch(() => ({}))) as {
+      message?: string;
+    };
     throw new Error(
-      `Erreur ${response.status}: ${errorData.message ?? response.statusText}`
+      `Erreur ${response.status}: ${errorData.message ?? response.statusText}`,
     );
   }
 
-  const data = (await response.json()) as { deviceAccessKey: string; status: string };
+  const data = (await response.json()) as {
+    deviceAccessKey: string;
+    status: string;
+  };
   console.log(`✅ Enregistré avec succès`);
   console.log(`   Device Access Key: ${data.deviceAccessKey}`);
   console.log(`   Status: ${data.status}`);
@@ -115,16 +120,18 @@ const registerDevice = async (
 
 // Vérification du status
 const checkStatus = async (
-  deviceKey: string
+  deviceKey: string,
 ): Promise<{ status: string; deviceId: string }> => {
   const response = await fetch(`${API_URL}/devices/me`, {
     headers: { "x-device-key": deviceKey },
   });
 
   if (!response.ok) {
-    const errorData = (await response.json().catch(() => ({}))) as { message?: string };
+    const errorData = (await response.json().catch(() => ({}))) as {
+      message?: string;
+    };
     throw new Error(
-      `Erreur ${response.status}: ${errorData.message ?? response.statusText}`
+      `Erreur ${response.status}: ${errorData.message ?? response.statusText}`,
     );
   }
 
@@ -135,10 +142,12 @@ const checkStatus = async (
 const waitForActivation = async (
   deviceKey: string,
   maxAttempts = 60,
-  intervalMs = 5000
+  intervalMs = 5000,
 ): Promise<void> => {
   console.log(`\n⏳ En attente d'approbation par l'admin...`);
-  console.log(`   (Poll toutes les ${intervalMs / 1000}s, max ${maxAttempts} tentatives)`);
+  console.log(
+    `   (Poll toutes les ${intervalMs / 1000}s, max ${maxAttempts} tentatives)`,
+  );
   console.log(`   💡 Utilisez: pnpm admin:approve-device <deviceId>\n`);
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -153,7 +162,9 @@ const waitForActivation = async (
       throw new Error("Device révoqué par l'admin");
     }
 
-    process.stdout.write(`   Tentative ${attempt}/${maxAttempts} - Status: ${status}\r`);
+    process.stdout.write(
+      `   Tentative ${attempt}/${maxAttempts} - Status: ${status}\r`,
+    );
     await sleep(intervalMs);
   }
 
@@ -163,7 +174,7 @@ const waitForActivation = async (
 // Envoi de télémétrie
 const sendTelemetry = async (
   deviceKey: string,
-  type: "climate" | "presence"
+  type: "climate" | "presence",
 ): Promise<void> => {
   const telemetry = generateTelemetry(type);
 
@@ -177,22 +188,28 @@ const sendTelemetry = async (
   });
 
   if (!response.ok) {
-    const errorData = (await response.json().catch(() => ({}))) as { message?: string };
+    const errorData = (await response.json().catch(() => ({}))) as {
+      message?: string;
+    };
     throw new Error(
-      `Erreur ${response.status}: ${errorData.message ?? response.statusText}`
+      `Erreur ${response.status}: ${errorData.message ?? response.statusText}`,
     );
   }
 
   // Affichage selon le type
   if (type === "climate") {
-    const t = telemetry as { temperature: number; humidity: number; battery: number };
+    const t = telemetry as {
+      temperature: number;
+      humidity: number;
+      battery: number;
+    };
     console.log(
-      `📡 Télémétrie envoyée: ${t.temperature}°C, ${t.humidity}% HR, batterie ${t.battery}%`
+      `📡 Télémétrie envoyée: ${t.temperature}°C, ${t.humidity}% HR, batterie ${t.battery}%`,
     );
   } else {
     const t = telemetry as { motion: boolean; battery: number };
     console.log(
-      `📡 Télémétrie envoyée: motion=${t.motion}, batterie ${t.battery}%`
+      `📡 Télémétrie envoyée: motion=${t.motion}, batterie ${t.battery}%`,
     );
   }
 };
@@ -201,9 +218,11 @@ const sendTelemetry = async (
 const telemetryLoop = async (
   deviceKey: string,
   type: "climate" | "presence",
-  intervalMs = 10000
+  intervalMs = 10000,
 ): Promise<void> => {
-  console.log(`\n🔄 Démarrage de l'envoi de télémétrie (toutes les ${intervalMs / 1000}s)`);
+  console.log(
+    `\n🔄 Démarrage de l'envoi de télémétrie (toutes les ${intervalMs / 1000}s)`,
+  );
   console.log(`   Appuyez sur Ctrl+C pour arrêter\n`);
 
   while (true) {

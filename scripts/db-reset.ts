@@ -35,7 +35,7 @@ const main = async () => {
     for (const collection of collections) {
       const result = await db.collection(collection.name).deleteMany({});
       console.log(
-        `   ✓ ${collection.name}: ${result.deletedCount} document(s) supprimé(s)`
+        `   ✓ ${collection.name}: ${result.deletedCount} document(s) supprimé(s)`,
       );
     }
 

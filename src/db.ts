@@ -1,6 +1,7 @@
 import { MongoClient, Db } from "mongodb";
 
-const MONGODB_URI = process.env.MONGODB_URI ?? "mongodb://localhost:27017/iot_monitoring";
+const MONGODB_URI =
+  process.env.MONGODB_URI ?? "mongodb://localhost:27017/iot_monitoring";
 
 let client: MongoClient | null = null;
 let db: Db | null = null;

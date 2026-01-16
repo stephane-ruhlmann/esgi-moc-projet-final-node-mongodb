@@ -39,11 +39,13 @@ const main = async () => {
           "x-api-key": ADMIN_API_KEY,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (!response.ok) {
-      const errorData = (await response.json().catch(() => ({}))) as { message?: string };
+      const errorData = (await response.json().catch(() => ({}))) as {
+        message?: string;
+      };
 
       if (response.status === 404) {
         console.error(`❌ Device non trouvé: ${deviceId}`);
